@@ -20,6 +20,7 @@ func newRootCmd() *cobra.Command {
 		Run:   runRootCmd,
 	}
 	rootCmd.AddCommand(newBaseCmd())
+	rootCmd.AddCommand(newStorageCmd())
 	rootCmd.Version = version.Get().String()
 	return &rootCmd
 }
