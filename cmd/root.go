@@ -21,6 +21,7 @@ func newRootCmd() *cobra.Command {
 	}
 	rootCmd.AddCommand(newBaseCmd())
 	rootCmd.AddCommand(newStorageCmd())
+	rootCmd.AddCommand(newSubnetCmd())
 	rootCmd.Version = version.Get().String()
 	return &rootCmd
 }
