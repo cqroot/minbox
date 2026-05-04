@@ -15,8 +15,8 @@ func runRootCmd(cmd *cobra.Command, args []string) {
 func newRootCmd() *cobra.Command {
 	rootCmd := cobra.Command{
 		Use:   "minbox",
-		Short: "minbox - A CLI tool",
-		Long:  `minbox is a CLI tool built with Cobra.`,
+		Short: "A CLI toolkit for developers",
+		Long:  `minbox is a CLI toolkit for developers.`,
 		Run:   runRootCmd,
 	}
 	rootCmd.AddCommand(newBaseCmd())
