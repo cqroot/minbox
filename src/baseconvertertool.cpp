@@ -7,7 +7,7 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QSpacerItem>
-#include <QIntValidator>
+#include <QRegularExpressionValidator>
 
 BaseConverterTool::BaseConverterTool(QWidget *parent)
     : QWidget(parent)
@@ -31,22 +31,22 @@ BaseConverterTool::BaseConverterTool(QWidget *parent)
 
     m_binaryInput = new QLineEdit();
     m_binaryInput->setPlaceholderText("Binary");
-    m_binaryInput->setValidator(new QRegExpValidator(QRegExp("[01]*"), this));
+    m_binaryInput->setValidator(new QRegularExpressionValidator(QRegularExpression("[01]*"), this));
     formLayout->addRow(m_binaryInput);
 
     m_octalInput = new QLineEdit();
     m_octalInput->setPlaceholderText("Octal");
-    m_octalInput->setValidator(new QRegExpValidator(QRegExp("[0-7]*"), this));
+    m_octalInput->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-7]*"), this));
     formLayout->addRow(m_octalInput);
 
     m_decimalInput = new QLineEdit();
     m_decimalInput->setPlaceholderText("Decimal");
-    m_decimalInput->setValidator(new QRegExpValidator(QRegExp("[0-9]*"), this));
+    m_decimalInput->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]*"), this));
     formLayout->addRow(m_decimalInput);
 
     m_hexInput = new QLineEdit();
     m_hexInput->setPlaceholderText("Hexadecimal");
-    m_hexInput->setValidator(new QRegExpValidator(QRegExp("(0[xX])?[0-9A-Fa-f]*"), this));
+    m_hexInput->setValidator(new QRegularExpressionValidator(QRegularExpression("(0[xX])?[0-9A-Fa-f]*"), this));
     formLayout->addRow(m_hexInput);
 
     wrapperLayout->addLayout(formLayout);

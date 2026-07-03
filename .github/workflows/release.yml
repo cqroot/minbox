@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: minbox-windows-x86_64.tar.gz
+            binary: minbox.exe
+          - os: ubuntu-latest
+            artifact: minbox-linux-x86_64.tar.gz
+            binary: minbox
+          - os: macos-latest
+            artifact: minbox-macos-universal.tar.gz
+            binary: minbox.app
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v6
+        with:
+          version: 6.5.0
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Package Windows
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          cd build
+          strip minbox.exe 2>/dev/null || true
+          tar -czvf ../minbox-windows-x86_64.tar.gz minbox.exe
+
+      - name: Package Linux
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          cd build
+          strip minbox 2>/dev/null || true
+          tar -czvf ../minbox-linux-x86_64.tar.gz minbox
+
+      - name: Package macOS
+        if: matrix.os == 'macos-latest'
+        shell: bash
+        run: |
+          cd build
+          tar -czvf ../minbox-macos-universal.tar.gz minbox.app
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}
+          path: ${{ matrix.artifact }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List artifacts
+        run: ls -la
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: '*'
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
